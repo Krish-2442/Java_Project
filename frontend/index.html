@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Management System — Dashboard</title>
+    <meta name="description" content="Fleet Management System - Full Stack Web Application for managing vehicles, drivers, trips, and maintenance.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- ─── NAVBAR ─── -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🚛</span>
+                <span>Fleet <span class="accent">Manager</span></span>
+            </a>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+                <button class="nav-tab" data-tab="vehicles">🚗 Vehicles</button>
+                <button class="nav-tab" data-tab="drivers">👤 Drivers</button>
+                <button class="nav-tab" data-tab="trips">📍 Trips</button>
+                <button class="nav-tab" data-tab="maintenance">🔧 Maintenance</button>
+                <button class="nav-tab" data-tab="logs">📋 Logs</button>
+            </div>
+            <div class="nav-status" id="apiStatus">
+                <span class="status-dot"></span>
+                <span>Connecting...</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ─── MAIN CONTENT ─── -->
+    <main class="main-content">
+
+        <!-- ═══ DASHBOARD TAB ═══ -->
+        <section class="tab-content active" id="tab-dashboard">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Dashboard Overview</h1>
+                    <p>Real-time fleet management statistics from MySQL database</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">🚗</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-vehicles">—</span>
+                            <span class="stat-label">Total Vehicles</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">👤</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-drivers">—</span>
+                            <span class="stat-label">Total Drivers</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">📍</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-trips">—</span>
+                            <span class="stat-label">Total Trips</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">⚠️</div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-alerts">—</span>
+                            <span class="stat-label">Maintenance Alerts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Row -->
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <span class="qs-label">Available Vehicles</span>
+                        <span class="qs-value" id="stat-available-vehicles">—</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="qs-label">In Service</span>
+                        <span class="qs-value" id="stat-in-service">—</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="qs-label">Available Drivers</span>
+                        <span class="qs-value" id="stat-available-drivers">—</span>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Recent Activity Logs</h2>
+                        <button class="btn btn-sm" onclick="loadDashboard()">↻ Refresh</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                    <th>Table</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-logs">
+                                <tr><td colspan="4" class="empty-state">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ VEHICLES TAB ═══ -->
+        <section class="tab-content" id="tab-vehicles">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Vehicle Management</h1>
+                    <button class="btn btn-primary" onclick="toggleForm('vehicle-form')">+ Add Vehicle</button>
+                </div>
+
+                <!-- Add Vehicle Form -->
+                <div class="form-card hidden" id="vehicle-form">
+                    <h3>Register New Vehicle</h3>
+                    <form onsubmit="addVehicle(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Fleet ID</label>
+                                <select id="v-fleet" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Registration Number</label>
+                                <input type="text" id="v-reg" placeholder="GJ01AB1234" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Make</label>
+                                <input type="text" id="v-make" placeholder="Tata" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Model</label>
+                                <input type="text" id="v-model" placeholder="Nexon" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Year</label>
+                                <input type="number" id="v-year" placeholder="2024" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Fuel Type</label>
+                                <select id="v-fuel" required>
+                                    <option>Petrol</option>
+                                    <option>Diesel</option>
+                                    <option>CNG</option>
+                                    <option>Electric</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Vehicle Type</label>
+                                <select id="v-type" onchange="toggleSeating()">
+                                    <option value="Car">Car</option>
+                                    <option value="Bus">Bus</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="seating-group">
+                                <label>Seating Capacity</label>
+                                <input type="number" id="v-seats" value="5">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Register Vehicle</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleForm('vehicle-form')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Vehicles Table -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>All Vehicles</h2>
+                        <button class="btn btn-sm" onclick="loadVehicles()">↻ Refresh</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fleet</th>
+                                    <th>Registration</th>
+                                    <th>Vehicle</th>
+                                    <th>Year</th>
+                                    <th>Fuel</th>
+                                    <th>Type</th>
+                                    <th>Seats</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vehicles-table">
+                                <tr><td colspan="10" class="empty-state">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ DRIVERS TAB ═══ -->
+        <section class="tab-content" id="tab-drivers">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Driver Management</h1>
+                    <button class="btn btn-primary" onclick="toggleForm('driver-form')">+ Add Driver</button>
+                </div>
+
+                <!-- Add Driver Form -->
+                <div class="form-card hidden" id="driver-form">
+                    <h3>Hire New Driver</h3>
+                    <form onsubmit="addDriver(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Fleet ID</label>
+                                <select id="d-fleet" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="d-name" placeholder="Rajesh Kumar" required>
+                            </div>
+                            <div class="form-group">
+                                <label>License Number</label>
+                                <input type="text" id="d-license" placeholder="DL-0420210012345" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                <input type="text" id="d-phone" placeholder="9001122334" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Hire Date</label>
+                                <input type="date" id="d-hire" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Hire Driver</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleForm('driver-form')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Drivers Table -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>All Drivers</h2>
+                        <button class="btn btn-sm" onclick="loadDrivers()">↻ Refresh</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Fleet</th>
+                                    <th>Name</th>
+                                    <th>License</th>
+                                    <th>Phone</th>
+                                    <th>Hire Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="drivers-table">
+                                <tr><td colspan="8" class="empty-state">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ TRIPS TAB ═══ -->
+        <section class="tab-content" id="tab-trips">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Trip Management</h1>
+                    <button class="btn btn-primary" onclick="toggleForm('trip-form')">+ Create Trip</button>
+                </div>
+
+                <!-- Create Trip Form -->
+                <div class="form-card hidden" id="trip-form">
+                    <h3>Create New Trip</h3>
+                    <div class="cost-badge">Cost = Distance × ₹12/km (auto-calculated)</div>
+                    <form onsubmit="createTrip(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Vehicle</label>
+                                <select id="t-vehicle" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Driver</label>
+                                <select id="t-driver" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Departure Date</label>
+                                <input type="date" id="t-departure" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Distance (km)</label>
+                                <input type="number" id="t-distance" step="0.1" placeholder="250" required
+                                       oninput="updateCostPreview()">
+                            </div>
+                        </div>
+                        <div class="cost-preview" id="cost-preview">
+                            Estimated Cost: <strong>₹0.00</strong>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Create Trip</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleForm('trip-form')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Trips Table -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Trip History</h2>
+                        <button class="btn btn-sm" onclick="loadTrips()">↻ Refresh</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Vehicle ID</th>
+                                    <th>Driver ID</th>
+                                    <th>Departure</th>
+                                    <th>Arrival</th>
+                                    <th>Distance</th>
+                                    <th>Cost (₹)</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trips-table">
+                                <tr><td colspan="9" class="empty-state">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ MAINTENANCE TAB ═══ -->
+        <section class="tab-content" id="tab-maintenance">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Maintenance Management</h1>
+                    <button class="btn btn-primary" onclick="toggleForm('maint-form')">+ Schedule Maintenance</button>
+                </div>
+
+                <!-- Schedule Maintenance Form -->
+                <div class="form-card hidden" id="maint-form">
+                    <h3>Schedule New Maintenance</h3>
+                    <form onsubmit="scheduleMaintenance(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Vehicle</label>
+                                <select id="m-vehicle" required></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Maintenance Type</label>
+                                <select id="m-type" required>
+                                    <option>Oil Change</option>
+                                    <option>Tire Replacement</option>
+                                    <option>Engine Repair</option>
+                                    <option>Brake Inspection</option>
+                                    <option>Battery Replacement</option>
+                                    <option>AC Service</option>
+                                    <option>General Service</option>
+                                    <option>Engine Overhaul</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" id="m-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Estimated Cost (₹)</label>
+                                <input type="number" id="m-cost" step="0.01" placeholder="5000" required>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Schedule</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleForm('maint-form')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Maintenance Alerts -->
+                <div class="section-card alerts-card">
+                    <div class="section-header">
+                        <h2>⚠️ Active Alerts</h2>
+                    </div>
+                    <div id="maintenance-alerts" class="alerts-container">
+                        <p class="empty-state">Loading...</p>
+                    </div>
+                </div>
+
+                <!-- All Maintenance Records -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>All Records</h2>
+                        <button class="btn btn-sm" onclick="loadMaintenance()">↻ Refresh</button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Vehicle ID</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Cost (₹)</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="maintenance-table">
+                                <tr><td colspan="7" class="empty-state">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ LOGS TAB ═══ -->
+        <section class="tab-content" id="tab-logs">
+            <div class="container">
+                <div class="page-header">
+                    <h1>System Audit Logs</h1>
+                    <button class="btn btn-sm" onclick="loadLogs()">↻ Refresh</button>
+                </div>
+
+                <div class="section-card">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Log ID</th>
+                                    <th>Timestamp</th>
+                                    <th>Action</th>
+                                    <th>Table</th>
+                                    <th>Record ID</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logs-table">
+                                <tr><td colspan="6" class="empty-state">Loading...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ─── TOAST NOTIFICATION ─── -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script type="module" src="/script.js"></script>
+</body>
+</html>
