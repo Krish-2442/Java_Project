@@ -1,16 +1,6 @@
--- =============================================
--- Fleet Management System - Database Schema
--- Database: fleet_management_db
--- Normalization: 3NF
--- =============================================
-
--- Create and use database
 CREATE DATABASE IF NOT EXISTS fleet_management_db;
 USE fleet_management_db;
 
--- =============================================
--- TABLE 1: Fleet
--- =============================================
 CREATE TABLE Fleet (
     Fleet_ID INT AUTO_INCREMENT PRIMARY KEY,
     Fleet_Name VARCHAR(100) NOT NULL,
@@ -18,9 +8,6 @@ CREATE TABLE Fleet (
     Contact_Phone VARCHAR(15) NOT NULL
 );
 
--- =============================================
--- TABLE 2: Vehicle
--- =============================================
 CREATE TABLE Vehicle (
     Vehicle_ID INT AUTO_INCREMENT PRIMARY KEY,
     Fleet_ID INT NOT NULL,
@@ -36,9 +23,6 @@ CREATE TABLE Vehicle (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- =============================================
--- TABLE 3: Driver
--- =============================================
 CREATE TABLE Driver (
     Driver_ID INT AUTO_INCREMENT PRIMARY KEY,
     Fleet_ID INT NOT NULL,
@@ -51,9 +35,6 @@ CREATE TABLE Driver (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- =============================================
--- TABLE 4: Trip
--- =============================================
 CREATE TABLE Trip (
     Trip_ID INT AUTO_INCREMENT PRIMARY KEY,
     Vehicle_ID INT NOT NULL,
@@ -69,9 +50,6 @@ CREATE TABLE Trip (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- =============================================
--- TABLE 5: Maintenance
--- =============================================
 CREATE TABLE Maintenance (
     Maintenance_ID INT AUTO_INCREMENT PRIMARY KEY,
     Vehicle_ID INT NOT NULL,
@@ -83,11 +61,6 @@ CREATE TABLE Maintenance (
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- =============================================
--- SAMPLE DATA
--- =============================================
-
--- Fleet sample data (10 records)
 INSERT INTO Fleet (Fleet_Name, Company_Name, Contact_Phone) VALUES
 ('North Fleet', 'TransCorp India', '9876543210'),
 ('South Fleet', 'TransCorp India', '9876543211'),
@@ -100,7 +73,6 @@ INSERT INTO Fleet (Fleet_Name, Company_Name, Contact_Phone) VALUES
 ('Regional Fleet', 'StateLine Transport', '9334455667'),
 ('Premium Fleet', 'EliteDrive Services', '9556677889');
 
--- Vehicle sample data (15 records) — mix of Car and Bus types
 INSERT INTO Vehicle (Fleet_ID, Registration_Number, Make, Model, Year, Fuel_Type, Vehicle_Type, Seating_Capacity, Status) VALUES
 (1, 'GJ01AB1234', 'Tata', 'Nexon', 2022, 'Petrol', 'Car', 5, 'Available'),
 (1, 'GJ01CD5678', 'Maruti', 'Swift', 2021, 'Diesel', 'Car', 5, 'In Service'),
@@ -118,7 +90,6 @@ INSERT INTO Vehicle (Fleet_ID, Registration_Number, Make, Model, Year, Fuel_Type
 (9, 'AP09AB4466', 'BharatBenz', '1017', 2020, 'Diesel', 'Bus', 36, 'Under Maintenance'),
 (10, 'HR10CD5577', 'Mercedes', 'V-Class', 2023, 'Diesel', 'Car', 7, 'Available');
 
--- Driver sample data (12 records)
 INSERT INTO Driver (Fleet_ID, Name, License_Number, Phone, Hire_Date, Status) VALUES
 (1, 'Rajesh Kumar', 'DL-0420210012345', '9001122334', '2021-03-15', 'Available'),
 (1, 'Suresh Patel', 'GJ-0120200098765', '9001122335', '2020-06-10', 'On Trip'),
@@ -133,7 +104,6 @@ INSERT INTO Driver (Fleet_ID, Name, License_Number, Phone, Hire_Date, Status) VA
 (9, 'Ravi Reddy', 'AP-0920230033334', '9889900113', '2023-06-22', 'On Trip'),
 (10, 'Manish Joshi', 'HR-1020220055556', '9990011224', '2022-12-01', 'Available');
 
--- Trip sample data (12 records)
 INSERT INTO Trip (Vehicle_ID, Driver_ID, Departure_Date, Arrival_Date, Distance, Cost, Status) VALUES
 (1, 1, '2024-01-10', '2024-01-10', 120.5, 1500.00, 'Completed'),
 (2, 2, '2024-01-12', '2024-01-13', 450.0, 5500.00, 'Completed'),
@@ -148,7 +118,6 @@ INSERT INTO Trip (Vehicle_ID, Driver_ID, Departure_Date, Arrival_Date, Distance,
 (1, 1, '2024-03-01', '2024-03-01', 150.0, 1800.00, 'Completed'),
 (3, 3, '2024-03-05', NULL, 400.0, 5000.00, 'Scheduled');
 
--- Maintenance sample data (10 records)
 INSERT INTO Maintenance (Vehicle_ID, Maintenance_Type, Maintenance_Date, Cost, Status) VALUES
 (1, 'Oil Change', '2024-01-05', 2500.00, 'Completed'),
 (2, 'Tire Replacement', '2024-01-08', 8000.00, 'Completed'),
@@ -161,7 +130,6 @@ INSERT INTO Maintenance (Vehicle_ID, Maintenance_Type, Maintenance_Date, Cost, S
 (14, 'Engine Overhaul', '2024-03-05', 25000.00, 'In Progress'),
 (15, 'General Service', '2024-03-10', 6000.00, 'Scheduled');
 
--- VIEW 1: Fleet Summary — shows each fleet with vehicle count and driver count
 CREATE OR REPLACE VIEW Fleet_Summary AS
 SELECT
     f.Fleet_ID,
@@ -171,7 +139,6 @@ SELECT
     (SELECT COUNT(*) FROM Driver d WHERE d.Fleet_ID = f.Fleet_ID) AS Total_Drivers
 FROM Fleet f;
 
--- VIEW 2: Trip Details — joins Trip with Vehicle and Driver names
 CREATE OR REPLACE VIEW Trip_Details AS
 SELECT
     t.Trip_ID,
@@ -187,7 +154,6 @@ FROM Trip t
 JOIN Vehicle v ON t.Vehicle_ID = v.Vehicle_ID
 JOIN Driver d ON t.Driver_ID = d.Driver_ID;
 
--- VIEW 3: Vehicle Maintenance History — vehicle info + maintenance records
 CREATE OR REPLACE VIEW Vehicle_Maintenance_History AS
 SELECT
     v.Registration_Number,
@@ -200,7 +166,6 @@ FROM Maintenance m
 JOIN Vehicle v ON m.Vehicle_ID = v.Vehicle_ID
 ORDER BY m.Maintenance_Date DESC;
 
--- VIEW 4: Available Resources — shows all available vehicles and drivers
 CREATE OR REPLACE VIEW Available_Resources AS
 SELECT
     'Vehicle' AS Resource_Type,
@@ -220,7 +185,6 @@ FROM Driver d
 JOIN Fleet f ON d.Fleet_ID = f.Fleet_ID
 WHERE d.Status = 'Available';
 
--- PROCEDURE 1: Add a new fleet (INSERT with validation)
 DELIMITER //
 CREATE PROCEDURE sp_AddFleet(
     IN p_Fleet_Name VARCHAR(100),
@@ -237,7 +201,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- PROCEDURE 2: Register a vehicle (INSERT)
 DELIMITER //
 CREATE PROCEDURE sp_RegisterVehicle(
     IN p_Fleet_ID INT,
@@ -250,11 +213,11 @@ CREATE PROCEDURE sp_RegisterVehicle(
     IN p_Seating_Capacity INT
 )
 BEGIN
-    -- Check if fleet exists
+
     IF NOT EXISTS (SELECT 1 FROM Fleet WHERE Fleet_ID = p_Fleet_ID) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Fleet ID does not exist';
     END IF;
-    -- Check duplicate registration number
+
     IF EXISTS (SELECT 1 FROM Vehicle WHERE Registration_Number = p_Reg_Number) THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Registration number already exists';
     END IF;
@@ -266,7 +229,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- PROCEDURE 3: Delete a vehicle by ID (DELETE)
 DELIMITER //
 CREATE PROCEDURE sp_DeleteVehicle(
     IN p_Vehicle_ID INT
@@ -280,7 +242,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- PROCEDURE 4: Update vehicle status (UPDATE)
 DELIMITER //
 CREATE PROCEDURE sp_UpdateVehicleStatus(
     IN p_Vehicle_ID INT,
@@ -295,7 +256,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- PROCEDURE 5: Create a trip (INSERT with cost calculation)
 DELIMITER //
 CREATE PROCEDURE sp_CreateTrip(
     IN p_Vehicle_ID INT,
@@ -305,26 +265,26 @@ CREATE PROCEDURE sp_CreateTrip(
 )
 BEGIN
     DECLARE v_Cost DOUBLE;
-    -- Check vehicle is available
+
     IF NOT EXISTS (SELECT 1 FROM Vehicle WHERE Vehicle_ID = p_Vehicle_ID AND Status = 'Available') THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Vehicle is not available for trip';
     END IF;
-    -- Check driver is available
+
     IF NOT EXISTS (SELECT 1 FROM Driver WHERE Driver_ID = p_Driver_ID AND Status = 'Available') THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Driver is not available for trip';
     END IF;
-    -- Auto-calculate cost at Rs.12 per km
+
     SET v_Cost = p_Distance * 12.0;
     INSERT INTO Trip (Vehicle_ID, Driver_ID, Departure_Date, Distance, Cost, Status)
     VALUES (p_Vehicle_ID, p_Driver_ID, p_Departure_Date, p_Distance, v_Cost, 'Scheduled');
-    -- Update vehicle and driver status
+
     UPDATE Vehicle SET Status = 'In Service' WHERE Vehicle_ID = p_Vehicle_ID;
     UPDATE Driver SET Status = 'On Trip' WHERE Driver_ID = p_Driver_ID;
     SELECT LAST_INSERT_ID() AS New_Trip_ID, v_Cost AS Estimated_Cost;
 END //
 DELIMITER ;
 
--- PROCEDURE 6: Complete a trip (UPDATE with arrival date)
+
 DELIMITER //
 CREATE PROCEDURE sp_CompleteTrip(
     IN p_Trip_ID INT
@@ -332,23 +292,23 @@ CREATE PROCEDURE sp_CompleteTrip(
 BEGIN
     DECLARE v_Vehicle_ID INT;
     DECLARE v_Driver_ID INT;
-    -- Fetch vehicle and driver from trip
+
     SELECT Vehicle_ID, Driver_ID INTO v_Vehicle_ID, v_Driver_ID
     FROM Trip WHERE Trip_ID = p_Trip_ID;
     IF v_Vehicle_ID IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Trip not found';
     END IF;
-    -- Mark trip as completed with today's date
+
     UPDATE Trip SET Status = 'Completed', Arrival_Date = CURDATE()
     WHERE Trip_ID = p_Trip_ID;
-    -- Free up vehicle and driver
+
     UPDATE Vehicle SET Status = 'Available' WHERE Vehicle_ID = v_Vehicle_ID;
     UPDATE Driver SET Status = 'Available' WHERE Driver_ID = v_Driver_ID;
     SELECT CONCAT('Trip ', p_Trip_ID, ' completed successfully') AS Result;
 END //
 DELIMITER ;
 
--- PROCEDURE 7: Get fleet report (SELECT with aggregation)
+
 DELIMITER //
 CREATE PROCEDURE sp_FleetReport(
     IN p_Fleet_ID INT
@@ -368,8 +328,6 @@ BEGIN
 END //
 DELIMITER ;
 
--- TRIGGER 1: When a vehicle is deleted, log the event
--- (creates an audit log table first)
 CREATE TABLE IF NOT EXISTS Audit_Log (
     Log_ID INT AUTO_INCREMENT PRIMARY KEY,
     Action_Type VARCHAR(50) NOT NULL,
@@ -390,7 +348,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- TRIGGER 2: When a new driver is inserted, log it
+
 DELIMITER //
 CREATE TRIGGER trg_AfterDriverInsert
 AFTER INSERT ON Driver
@@ -402,7 +360,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- TRIGGER 3: When maintenance status changes to 'Completed', mark vehicle as 'Available'
+
 DELIMITER //
 CREATE TRIGGER trg_AfterMaintenanceUpdate
 AFTER UPDATE ON Maintenance
@@ -414,7 +372,7 @@ BEGIN
 END //
 DELIMITER ;
 
--- QUERY 1: Total revenue per fleet (GROUP BY + JOIN)
+
 SELECT f.Fleet_Name, f.Company_Name,
        COUNT(t.Trip_ID) AS Total_Trips,
        COALESCE(SUM(t.Cost), 0) AS Total_Revenue,
@@ -425,7 +383,7 @@ LEFT JOIN Trip t ON v.Vehicle_ID = t.Vehicle_ID
 GROUP BY f.Fleet_ID, f.Fleet_Name, f.Company_Name
 ORDER BY Total_Revenue DESC;
 
--- QUERY 2: Vehicle utilization — trips per vehicle (Subquery)
+
 SELECT v.Registration_Number,
        CONCAT(v.Make, ' ', v.Model) AS Vehicle,
        v.Status,
@@ -434,14 +392,14 @@ SELECT v.Registration_Number,
 FROM Vehicle v
 ORDER BY Trip_Count DESC;
 
--- QUERY 3: Drivers who have never been on a trip (NOT EXISTS)
+
 SELECT d.Driver_ID, d.Name, d.License_Number, d.Status
 FROM Driver d
 WHERE NOT EXISTS (
     SELECT 1 FROM Trip t WHERE t.Driver_ID = d.Driver_ID
 );
 
--- QUERY 4: Highest maintenance cost vehicles (HAVING + GROUP BY)
+
 SELECT v.Registration_Number,
        CONCAT(v.Make, ' ', v.Model) AS Vehicle,
        COUNT(m.Maintenance_ID) AS Maintenance_Count,
@@ -452,7 +410,7 @@ GROUP BY v.Vehicle_ID, v.Registration_Number, v.Make, v.Model
 HAVING SUM(m.Cost) > 5000
 ORDER BY Total_Maintenance_Cost DESC;
 
--- QUERY 5: Monthly trip summary (DATE functions)
+
 SELECT
     DATE_FORMAT(t.Departure_Date, '%Y-%m') AS Month,
     COUNT(*) AS Trips,
@@ -463,7 +421,6 @@ FROM Trip t
 GROUP BY DATE_FORMAT(t.Departure_Date, '%Y-%m')
 ORDER BY Month;
 
--- QUERY 6: Vehicles that need maintenance soon (last service > 60 days ago)
 SELECT v.Registration_Number,
        CONCAT(v.Make, ' ', v.Model) AS Vehicle,
        MAX(m.Maintenance_Date) AS Last_Service_Date,
@@ -475,31 +432,29 @@ HAVING Days_Since_Service > 60 OR Last_Service_Date IS NULL
 ORDER BY Days_Since_Service DESC;
 
 
--- DEMO: INSERT a new fleet using stored procedure
+
 CALL sp_AddFleet('Demo Fleet', 'Demo Transport Co.', '9999988888');
 
--- DEMO: Register a new vehicle using stored procedure
+
 CALL sp_RegisterVehicle(11, 'GJ05XY9999', 'Tata', 'Punch', 2024, 'Petrol', 'Car', 5);
 
--- DEMO: Create a trip (auto-calculates cost, updates vehicle/driver status)
--- Note: Use an available vehicle and driver; IDs may vary after above inserts
 CALL sp_CreateTrip(16, 1, '2024-04-01', 250.0);
 
--- DEMO: Complete the trip (marks trip done, frees vehicle and driver)
+
 CALL sp_CompleteTrip(13);
 
--- DEMO: Update vehicle status
+
 CALL sp_UpdateVehicleStatus(3, 'Under Maintenance');
 
--- DEMO: Delete a vehicle and check audit log
+
 CALL sp_DeleteVehicle(16);
 SELECT * FROM Audit_Log;
 
--- DEMO: View reports using views
+
 SELECT * FROM Fleet_Summary;
 SELECT * FROM Trip_Details;
 SELECT * FROM Vehicle_Maintenance_History;
 SELECT * FROM Available_Resources;
 
--- DEMO: Get fleet report
+
 CALL sp_FleetReport(1);

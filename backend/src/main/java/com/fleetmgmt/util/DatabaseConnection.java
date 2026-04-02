@@ -13,11 +13,10 @@ import java.sql.SQLException;
  */
 public class DatabaseConnection {
 
-    // ======= UPDATE THESE VALUES TO MATCH YOUR MYSQL SETUP =======
+    // UPDATE THESE VALUES TO MATCH YOUR MYSQL SETUP
     private static final String URL = "jdbc:mysql://localhost:3306/fleet_management_db";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "Krish#244";
-    // ==============================================================
 
     private static Connection connection = null;
 
@@ -25,10 +24,8 @@ public class DatabaseConnection {
     private DatabaseConnection() {
     }
 
-    /**
-     * Returns a single shared Connection to the MySQL database.
-     * Creates the connection on first call, reuses on subsequent calls.
-     */
+    // Returns a single shared Connection to the MySQL database.
+    // Creates the connection on first call, reuses on subsequent calls.
     public static Connection getConnection() throws SQLException {
         try {
             if (connection == null || connection.isClosed()) {
@@ -44,9 +41,7 @@ public class DatabaseConnection {
         return connection;
     }
 
-    /**
-     * Closes the shared database connection.
-     */
+    // Closes the shared database connection
     public static void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {
