@@ -9,14 +9,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service class for Trip CRUD operations.
- */
 public class TripService {
 
-    /**
-     * Creates a new trip.
-     */
     public void createTrip(Trip trip) throws FleetException {
         String sql = "INSERT INTO Trip (Vehicle_ID, Driver_ID, Departure_Date, Arrival_Date, "
                 + "Distance, Cost, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -48,9 +42,6 @@ public class TripService {
         }
     }
 
-    /**
-     * Returns all trips from the database.
-     */
     public List<Trip> getAllTrips() throws FleetException {
         List<Trip> trips = new ArrayList<>();
         String sql = "SELECT * FROM Trip";
@@ -71,10 +62,6 @@ public class TripService {
         return trips;
     }
 
-    /**
-     * Calculates estimated trip cost based on distance.
-     * Simple formula: cost = distance * rate per km
-     */
     public double calculateTripCost(double distance) {
         double ratePerKm = 12.0; // Rs. 12 per km
         double cost = distance * ratePerKm;
@@ -83,9 +70,6 @@ public class TripService {
         return cost;
     }
 
-    /**
-     * Updates the status of a trip (e.g., Scheduled, In Progress, Completed).
-     */
     public void updateTripStatus(int tripId, String newStatus) throws FleetException {
         String sql = "UPDATE Trip SET Status = ? WHERE Trip_ID = ?";
         try {
@@ -106,9 +90,6 @@ public class TripService {
         }
     }
 
-    /**
-     * Helper: builds a Trip from a ResultSet row.
-     */
     private Trip buildTripFromResultSet(ResultSet rs) throws SQLException {
         return new Trip(
                 rs.getInt("Trip_ID"),

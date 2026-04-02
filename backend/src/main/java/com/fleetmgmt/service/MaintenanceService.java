@@ -8,16 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service class for Maintenance operations.
- * Note: Maintenance does not have a separate model class — results are
- * displayed directly using formatted strings to keep the project simple.
- */
 public class MaintenanceService {
 
-    /**
-     * Schedules a new maintenance entry for a vehicle.
-     */
     public void scheduleMaintenance(int vehicleId, String maintenanceType,
                                     String date, double cost) throws FleetException {
         String sql = "INSERT INTO Maintenance (Vehicle_ID, Maintenance_Type, Maintenance_Date, "
@@ -40,10 +32,6 @@ public class MaintenanceService {
         }
     }
 
-    /**
-     * Returns all maintenance records for a specific vehicle.
-     * Each record is returned as a formatted string.
-     */
     public List<String> getMaintenanceByVehicle(int vehicleId) throws FleetException {
         List<String> records = new ArrayList<>();
         String sql = "SELECT * FROM Maintenance WHERE Vehicle_ID = ?";
@@ -74,9 +62,6 @@ public class MaintenanceService {
         return records;
     }
 
-    /**
-     * Marks a maintenance record as Completed.
-     */
     public void completeMaintenance(int maintenanceId) throws FleetException {
         String sql = "UPDATE Maintenance SET Status = 'Completed' WHERE Maintenance_ID = ?";
         try {

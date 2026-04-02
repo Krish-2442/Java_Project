@@ -11,15 +11,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service class for Vehicle CRUD operations.
- * Demonstrates POLYMORPHISM: returns List<Vehicle> containing CarVehicle and BusVehicle.
- */
 public class VehicleService {
 
-    /**
-     * Registers a new vehicle in the database.
-     */
     public void registerVehicle(Vehicle vehicle) throws FleetException {
         String sql = "INSERT INTO Vehicle (Fleet_ID, Registration_Number, Make, Model, Year, "
                 + "Fuel_Type, Vehicle_Type, Seating_Capacity, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -53,10 +46,6 @@ public class VehicleService {
         }
     }
 
-    /**
-     * Returns all vehicles belonging to a fleet.
-     * Demonstrates POLYMORPHISM — List<Vehicle> holding CarVehicle and BusVehicle objects.
-     */
     public List<Vehicle> getVehiclesByFleet(int fleetId) throws FleetException {
         List<Vehicle> vehicles = new ArrayList<>();
         String sql = "SELECT * FROM Vehicle WHERE Fleet_ID = ?";
@@ -80,9 +69,6 @@ public class VehicleService {
         return vehicles;
     }
 
-    /**
-     * Returns all vehicles in the database (for reports).
-     */
     public List<Vehicle> getAllVehicles() throws FleetException {
         List<Vehicle> vehicles = new ArrayList<>();
         String sql = "SELECT * FROM Vehicle";
@@ -104,9 +90,6 @@ public class VehicleService {
         return vehicles;
     }
 
-    /**
-     * Updates the status of a vehicle (e.g., Available, In Service, Under Maintenance).
-     */
     public void updateVehicleStatus(int vehicleId, String newStatus) throws FleetException {
         String sql = "UPDATE Vehicle SET Status = ? WHERE Vehicle_ID = ?";
         try {
@@ -127,9 +110,6 @@ public class VehicleService {
         }
     }
 
-    /**
-     * Deletes a vehicle from the database.
-     */
     public void deleteVehicle(int vehicleId) throws FleetException {
         String sql = "DELETE FROM Vehicle WHERE Vehicle_ID = ?";
         try {
@@ -149,9 +129,6 @@ public class VehicleService {
         }
     }
 
-    /**
-     * Helper: builds a CarVehicle or BusVehicle from a ResultSet row.
-     */
     private Vehicle buildVehicleFromResultSet(ResultSet rs) throws SQLException {
         String type = rs.getString("Vehicle_Type");
         if ("Bus".equalsIgnoreCase(type)) {

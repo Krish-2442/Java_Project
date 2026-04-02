@@ -8,15 +8,11 @@ import com.fleetmgmt.util.FileLogger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Service class for Driver CRUD operations.
- */
+// Service class for Driver CRUD operations.
 public class DriverService {
 
-    /**
-     * Hires (adds) a new driver.
-     */
+    
+    // Hires (adds) a new driver
     public void hireDriver(Driver driver) throws FleetException {
         String sql = "INSERT INTO Driver (Fleet_ID, Name, License_Number, Phone, Hire_Date, Status) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
@@ -39,9 +35,8 @@ public class DriverService {
         }
     }
 
-    /**
-     * Returns all drivers from the database.
-     */
+    
+    // Returns all drivers from the database.
     public List<Driver> getAllDrivers() throws FleetException {
         List<Driver> drivers = new ArrayList<>();
         String sql = "SELECT * FROM Driver";
@@ -62,9 +57,7 @@ public class DriverService {
         return drivers;
     }
 
-    /**
-     * Returns all drivers belonging to a specific fleet.
-     */
+    // Returns all drivers belonging to a specific fleet.
     public List<Driver> getDriversByFleet(int fleetId) throws FleetException {
         List<Driver> drivers = new ArrayList<>();
         String sql = "SELECT * FROM Driver WHERE Fleet_ID = ?";
@@ -87,9 +80,7 @@ public class DriverService {
         return drivers;
     }
 
-    /**
-     * Updates driver details (name, phone, status).
-     */
+    // Updates driver details (name, phone, status).
     public void updateDriver(Driver driver) throws FleetException {
         String sql = "UPDATE Driver SET Name = ?, Phone = ?, Status = ? WHERE Driver_ID = ?";
         try {
@@ -112,9 +103,7 @@ public class DriverService {
         }
     }
 
-    /**
-     * Helper: builds a Driver from a ResultSet row.
-     */
+    // Helper: builds a Driver from a ResultSet row
     private Driver buildDriverFromResultSet(ResultSet rs) throws SQLException {
         return new Driver(
                 rs.getInt("Driver_ID"),

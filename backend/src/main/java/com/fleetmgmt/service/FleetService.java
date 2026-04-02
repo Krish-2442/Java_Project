@@ -9,14 +9,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Service class for Fleet CRUD operations.
- */
+// Service class for Fleet CRUD operations.
 public class FleetService {
-
-    /**
-     * Adds a new fleet to the database.
-     */
+    // Adds a new fleet to the database.
     public void addFleet(Fleet fleet) throws FleetException {
         String sql = "INSERT INTO Fleet (Fleet_Name, Company_Name, Contact_Phone) VALUES (?, ?, ?)";
         try {
@@ -35,9 +30,7 @@ public class FleetService {
         }
     }
 
-    /**
-     * Returns all fleets from the database.
-     */
+    // Returns all fleets from the database
     public List<Fleet> getAllFleets() throws FleetException {
         List<Fleet> fleets = new ArrayList<>();
         String sql = "SELECT * FROM Fleet";
@@ -64,9 +57,7 @@ public class FleetService {
         return fleets;
     }
 
-    /**
-     * Returns a fleet by its ID.
-     */
+    // Returns a fleet by its ID.
     public Fleet getFleetById(int fleetId) throws FleetException {
         String sql = "SELECT * FROM Fleet WHERE Fleet_ID = ?";
         try {
@@ -95,9 +86,7 @@ public class FleetService {
         }
     }
 
-    /**
-     * Updates an existing fleet.
-     */
+    // Updates an existing fleet.
     public void updateFleet(Fleet fleet) throws FleetException {
         String sql = "UPDATE Fleet SET Fleet_Name = ?, Company_Name = ?, Contact_Phone = ? WHERE Fleet_ID = ?";
         try {
