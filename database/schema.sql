@@ -161,15 +161,6 @@ INSERT INTO Maintenance (Vehicle_ID, Maintenance_Type, Maintenance_Date, Cost, S
 (14, 'Engine Overhaul', '2024-03-05', 25000.00, 'In Progress'),
 (15, 'General Service', '2024-03-10', 6000.00, 'Scheduled');
 
-
--- #############################################################
--- ADVANCED SQL FEATURES (to impress teacher)
--- #############################################################
-
--- =============================================
--- VIEWS — Virtual tables for quick reporting
--- =============================================
-
 -- VIEW 1: Fleet Summary — shows each fleet with vehicle count and driver count
 CREATE OR REPLACE VIEW Fleet_Summary AS
 SELECT
@@ -228,11 +219,6 @@ SELECT
 FROM Driver d
 JOIN Fleet f ON d.Fleet_ID = f.Fleet_ID
 WHERE d.Status = 'Available';
-
-
--- =============================================
--- STORED PROCEDURES — Reusable business logic
--- =============================================
 
 -- PROCEDURE 1: Add a new fleet (INSERT with validation)
 DELIMITER //
@@ -382,11 +368,6 @@ BEGIN
 END //
 DELIMITER ;
 
-
--- =============================================
--- TRIGGERS — Automatic actions on data changes
--- =============================================
-
 -- TRIGGER 1: When a vehicle is deleted, log the event
 -- (creates an audit log table first)
 CREATE TABLE IF NOT EXISTS Audit_Log (
@@ -432,11 +413,6 @@ BEGIN
     END IF;
 END //
 DELIMITER ;
-
-
--- =============================================
--- USEFUL QUERIES — For reporting and analysis
--- =============================================
 
 -- QUERY 1: Total revenue per fleet (GROUP BY + JOIN)
 SELECT f.Fleet_Name, f.Company_Name,
@@ -498,11 +474,6 @@ GROUP BY v.Vehicle_ID, v.Registration_Number, v.Make, v.Model
 HAVING Days_Since_Service > 60 OR Last_Service_Date IS NULL
 ORDER BY Days_Since_Service DESC;
 
-
--- =============================================
--- DEMONSTRATION QUERIES (INSERT, UPDATE, DELETE)
--- Run these to show dynamic data operations
--- =============================================
 
 -- DEMO: INSERT a new fleet using stored procedure
 CALL sp_AddFleet('Demo Fleet', 'Demo Transport Co.', '9999988888');

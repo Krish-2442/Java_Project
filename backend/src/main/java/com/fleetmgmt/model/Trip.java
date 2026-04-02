@@ -1,11 +1,7 @@
 package com.fleetmgmt.model;
 
-/**
- * Trip entity class representing a trip made by a vehicle and driver.
- */
 public class Trip {
 
-    // Private attributes (encapsulation)
     private int tripId;
     private int vehicleId;
     private int driverId;
@@ -15,11 +11,9 @@ public class Trip {
     private double cost;
     private String status;
 
-    // Default constructor
     public Trip() {
     }
 
-    // Parameterized constructor
     public Trip(int tripId, int vehicleId, int driverId, String departureDate,
                 String arrivalDate, double distance, double cost, String status) {
         this.tripId = tripId;
@@ -32,7 +26,6 @@ public class Trip {
         this.status = status;
     }
 
-    // Getters and Setters
     public int getTripId() {
         return tripId;
     }
@@ -97,7 +90,6 @@ public class Trip {
         this.status = status;
     }
 
-    // toString method for display
     @Override
     public String toString() {
         return "Trip{" +

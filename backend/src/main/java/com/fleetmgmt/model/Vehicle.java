@@ -1,12 +1,7 @@
 package com.fleetmgmt.model;
 
-/**
- * Abstract Vehicle class — base class for all vehicle types.
- * Demonstrates INHERITANCE: CarVehicle and BusVehicle extend this class.
- */
 public abstract class Vehicle {
 
-    // Private attributes (encapsulation)
     private int vehicleId;
     private int fleetId;
     private String registrationNumber;
@@ -16,14 +11,10 @@ public abstract class Vehicle {
     private String fuelType;
     private String status;
 
-    // Default constructor
     public Vehicle() {
     }
 
-    // Parameterized constructor
-    public Vehicle(int vehicleId, int fleetId, String registrationNumber,
-                   String make, String model, int year,
-                   String fuelType, String status) {
+    public Vehicle(int vehicleId, int fleetId, String registrationNumber, String make, String model, int year, String fuelType, String status) {
         this.vehicleId = vehicleId;
         this.fleetId = fleetId;
         this.registrationNumber = registrationNumber;
@@ -34,10 +25,8 @@ public abstract class Vehicle {
         this.status = status;
     }
 
-    // Abstract method — subclasses must implement this (polymorphism)
     public abstract String getVehicleType();
 
-    // Getters and Setters
     public int getVehicleId() {
         return vehicleId;
     }
@@ -102,7 +91,6 @@ public abstract class Vehicle {
         this.status = status;
     }
 
-    // toString — overridden in subclasses
     @Override
     public String toString() {
         return "Vehicle{" +

@@ -1,11 +1,6 @@
 package com.fleetmgmt.model;
 
-/**
- * Driver entity class representing a driver assigned to a fleet.
- */
 public class Driver {
-
-    // Private attributes (encapsulation)
     private int driverId;
     private int fleetId;
     private String name;
@@ -14,11 +9,9 @@ public class Driver {
     private String hireDate;
     private String status;
 
-    // Default constructor
     public Driver() {
     }
 
-    // Parameterized constructor
     public Driver(int driverId, int fleetId, String name, String licenseNumber,
                   String phone, String hireDate, String status) {
         this.driverId = driverId;
@@ -30,7 +23,6 @@ public class Driver {
         this.status = status;
     }
 
-    // Getters and Setters
     public int getDriverId() {
         return driverId;
     }
@@ -87,7 +79,6 @@ public class Driver {
         this.status = status;
     }
 
-    // toString method for display
     @Override
     public String toString() {
         return "Driver{" +
